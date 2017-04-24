@@ -3,11 +3,18 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var expressValidator = require('express-validator');
+var session = require('express-session');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var mongo = require('mongodb');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/projetofinaleng3');
+var db = mongoose.connection;
 
 var index = require('./routes/index');
-var login = require('./routes/login');
-var register = require('./routes/register');
+var users = require('./routes/users');
 
 var app = express();
 
@@ -15,7 +22,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-// uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -25,8 +31,36 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/login', login);
-app.use('/login/register', register);
+app.use('/users', users);
+
+// Express Session
+app.use(session({
+	secret: 'secret',
+	saveUninitialized: true,
+	resave: true
+}));
+
+// Express Validator
+app.use(expressValidator({
+	errorFormatter: function(param, msg, value) {
+		var namespace = param.split('.')
+			, root    = namespace.shift()
+			, formParam = root;
+
+		while(namespace.length) {
+			formParam += '[' + namespace.shift() + ']';
+		}
+		return {
+			param : formParam,
+			msg   : msg,
+			value : value
+		};
+	}
+}));
+
+// Passport Init
+app.use(passport.initialize());
+app.use(passport.session());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

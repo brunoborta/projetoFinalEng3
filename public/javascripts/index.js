@@ -12,7 +12,7 @@
                 window.location.hash = hash;
             });
         } else { // if it was clicked in LOGAR
-            window.location.href = "/login";
+            window.location.href = "/users/login";
         }
 
     });

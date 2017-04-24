@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div class="auth-box-col">
-                <form method="post" novalidate class="auth-form">
+                <form method="post" class="auth-form" action="/users/login">
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" name="email" id="email" class="form-control">
@@ -17,12 +17,12 @@
                         <label for="password">Password</label>
                         <input type="password" name="password" id="password" class="form-control">
                     </div>
-                    <button type="submit" class="btn btn-primary">Sign In</button>
+                    <button type="submit" class="btn btn-primary">Entrar!</button>
                 </form>
             </div>
         </div>
         <div class="auth-register">
-            Não possui cadastro? <a href="/login/register">Registre-se!</a>
+            Não possui cadastro? <a href="/users/register">Registre-se!</a>
         </div>
     </div>
     <div class="auth-footer">Powered by <a href="http://www.brunoborta.com.br">Bruno Bortagaray</a></div>
