@@ -13,6 +13,15 @@
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans|Raleway|Bitter">
   </head>
   <body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+		{{#if success_msg}}
+			<div class="alert alert-success">{{success_msg}}</div>
+		{{/if}}
+		{{#if error_msg}}
+			<div class="alert alert-danger">{{error_msg}}</div>
+		{{/if}}
+		{{#if error}}
+			<div class="alert alert-danger">{{error}}</div>
+		{{/if}}
     {{{body}}}
     <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.easing.min.js"></script>
