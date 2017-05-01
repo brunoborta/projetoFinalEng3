@@ -16,6 +16,7 @@ var db = mongoose.connection;
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var internal = require('./routes/internal');
 
 var app = express();
 
@@ -64,17 +65,19 @@ app.use(function(req, res, next) {
 	res.locals.success_msg = req.flash('success_msg');
 	res.locals.error_msg = req.flash('error_msg');
 	res.locals.error = (req.app.get('env') === 'development') ? req.flash('error') : {};
+	res.locals.user = req.user || null;
 	next();
 });
-
-// Routes - Added after the validator so it could be used
-app.use('/', index);
-app.use('/users', users);
 
 
 // Passport Init
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Routes - Added after the validator so it could be used
+app.use('/', index);
+app.use('/users', users);
+app.use('/internal', internal);
 
 // // error handler/global variables
 // app.use(function(err, req, res, next) {

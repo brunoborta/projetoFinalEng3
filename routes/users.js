@@ -1,27 +1,36 @@
 var express = require('express');
 var router = express.Router();
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('../models/user');
 
-/* GET user */
-router.get('/', function(req, res, next) {
-	res.redirect('/users/login');
-});
-
 /* GET users login. */
-router.get('/login', function(req, res, next) {
-    res.render('login', {
-        css: '<link rel="stylesheet" type="text/css" href="/stylesheets/login.css">'
-    });
+router.get('/login', function(req, res) {
+	if(req.isAuthenticated() && req.user.typeUser === 'paciente') {
+		res.redirect('/internal/patient');
+	} else if(req.isAuthenticated() && req.user.typeUser === 'medico') {
+		res.redirect('/internal/medic');
+	} else {
+		res.render('login', {
+			css: '<link rel="stylesheet" type="text/css" href="/stylesheets/login.css">'
+		});
+	}
 });
 
 /* GET users register */
-router.get('/register', function(req, res, next) {
-	res.render('register', {
-		css: '<link rel="stylesheet" type="text/css" href="/stylesheets/register.css">',
-		js: '<script src="/javascripts/jquery.mask.min.js"></script>' +
-			'<script src="/javascripts/mask.js"></script>'
-	});
+router.get('/register', function(req, res) {
+	if(req.isAuthenticated() && req.user.typeUser === 'paciente') {
+		res.redirect('/internal/patient');
+	} else if(req.isAuthenticated() && req.user.typeUser === 'medico') {
+		res.redirect('/internal/medico');
+	} else {
+		res.render('register', {
+			css: '<link rel="stylesheet" type="text/css" href="/stylesheets/register.css">',
+			js: '<script src="/javascripts/jquery.mask.min.js"></script>' +
+				'<script src="/javascripts/mask.js"></script>'
+		});
+	}
 });
 
 /* POST user registration */
@@ -76,7 +85,6 @@ router.post('/register', function(req, res, next) {
 		
 		User.createUser(newUser, function(err, user) {
 			if(err) throw err;
-			console.log(user);
 		});
 		
 		req.flash('success_msg', 'Você foi registrado com sucesso e agora pode se logar!');
@@ -84,4 +92,47 @@ router.post('/register', function(req, res, next) {
 	}
 });
 
+passport.use(new LocalStrategy({
+		usernameField: 'login',
+	},
+	function(login, password, done) {
+		User.getUserByLogin(login, function(err, user) {
+			if(err) throw err;
+			if(!user) {
+				return done(null, false, {message: 'Usuário inválido'});
+			}
+			User.comparePasswords(password, user.password, function(err, isMatch) {
+				if(err) throw err;
+				if(isMatch) {
+					return done(null, user);
+				} else {
+					return done(null, false, {message: 'Senha inválida'});
+				}
+			});
+		});
+	}
+));
+
+passport.serializeUser(function(user, done) {
+	done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+	User.getUserById(id, function(err, user) {
+		done(err, user);
+	});
+});
+
+/* POST user login - passport */
+router.post('/login',
+	passport.authenticate('local', {failureRedirect: '/users/login', 
+									failureFlash: true}),
+	function(req, res) {
+		if(req.user.typeUser === 'medico') {
+			res.redirect('/internal/medic');
+		} else {
+			res.redirect('/internal/patient');
+		}
+	}
+);
 module.exports = router;
