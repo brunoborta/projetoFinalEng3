@@ -8,7 +8,7 @@ var User = require('../models/user');
 /* GET users login. */
 router.get('/login', function(req, res) {
 	if(req.isAuthenticated() && req.user.typeUser === 'paciente') {
-		res.redirect('/internal/patient');
+		res.redirect('/internal/patient/appointments');
 	} else if(req.isAuthenticated() && req.user.typeUser === 'medico') {
 		res.redirect('/internal/medic');
 	} else {
@@ -21,7 +21,7 @@ router.get('/login', function(req, res) {
 /* GET users register */
 router.get('/register', function(req, res) {
 	if(req.isAuthenticated() && req.user.typeUser === 'paciente') {
-		res.redirect('/internal/patient');
+		res.redirect('/internal/patient/appointments');
 	} else if(req.isAuthenticated() && req.user.typeUser === 'medico') {
 		res.redirect('/internal/medico');
 	} else {
@@ -131,7 +131,7 @@ router.post('/login',
 		if(req.user.typeUser === 'medico') {
 			res.redirect('/internal/medic');
 		} else {
-			res.redirect('/internal/patient');
+			res.redirect('/internal/patient/appointments');
 		}
 	}
 );
