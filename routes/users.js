@@ -23,7 +23,7 @@ router.get('/register', function(req, res) {
 	if(req.isAuthenticated() && req.user.typeUser === 'paciente') {
 		res.redirect('/internal/patient/appointments');
 	} else if(req.isAuthenticated() && req.user.typeUser === 'medico') {
-		res.redirect('/internal/medico');
+		res.redirect('/internal/medic');
 	} else {
 		res.render('register', {
 			css: '<link rel="stylesheet" type="text/css" href="/stylesheets/register.css">',

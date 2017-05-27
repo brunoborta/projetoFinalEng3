@@ -1,0 +1,115 @@
+<div class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-8">
+				<div class="card">
+					<div class="card-header" data-background-color="green">
+						<h4 class="title">Perfil</h4>
+						<p class="category">Complete o seu perfil</p>
+					</div>
+					<div class="card-content">
+						<form method="post" action="/internal/patient/profile" enctype="multipart/form-data">
+							{{#if errors}}
+								{{#each errors}}
+									<div class="alert alert-danger">{{msg}}</div>
+								{{/each}}
+							{{/if}}
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group label-floating">
+										<label class="control-label">Nome de Usuário</label>
+										<input type="text" name="login" class="form-control" disabled value="{{user.login}}">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group label-floating">
+										<label class="control-label">Email</label>
+										<input type="email" name="email" class="form-control" value="{{user.email}}" required>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-8">
+									<div class="form-group label-floating">
+										<label class="control-label">Nome</label>
+										<input type="text" name="nome" class="form-control" value="{{user.nome}}" required>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group label-floating">
+										<label class="control-label">CPF</label>
+										<input type="text" name="cpf" id="cpf" class="form-control" value="{{user.cpf}}" required>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-9">
+									<div class="form-group label-floating">
+										<label class="control-label">Endereço</label>
+										<input type="text" name="endereco" class="form-control" value="{{user.endereco}}" required>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group label-floating">
+										<label class="control-label">Telefone</label>
+										<input type="text" name="telefone" class="form-control" id="telefone" value="{{user.telefone}}" required>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group form-file-upload is-fileinput {{#unless user.avatar.length}}is-empty{{/unless}}">
+										<input type="file" id="avatar" name="avatar">
+										<div class="input-group">
+				<input type="text" readonly="" class="form-control" placeholder="{{#if user.avatar.filename.length}}Troque a foto do seu perfil...{{else}}Selecione a foto do seu perfil...{{/if}}">
+										</div>
+										<span class="material-input"></span>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Sobre mim</label>
+										<div class="form-group label-floating">
+											<label class="control-label">Ajude a clinica Medilab a fazer um serviço cada vez mais personalizado para você.</label>
+											<textarea class="form-control" rows="5" name="bio">{{#if user.bio.length}}{{user.bio}}{{/if}}</textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+							<input type="submit" class="btn btn-info pull-right" value="Atualizar Perfil"/>
+							<div class="clearfix"></div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card card-profile">
+					<div class="card-avatar">
+						<a href="#">
+							{{#if user.avatar.filename.length}}
+							<img class="img" src="/images/avatar/{{user.avatar.filename}}"/>
+							{{else}}
+							<img class="img" src="/images/avatar/default.jpg"/>
+							{{/if}}
+						</a>
+					</div>
+
+					<div class="content">
+						<h4 class="card-title">{{user.nome}}</h4>
+						<p class="card-content">
+							{{#if user.bio.length}}
+								{{user.bio}}
+							{{else}}
+								Escreva um pouco sobre você para que a Clinica Medilab possa personalizar o serviço ainda mais para você!
+							{{/if}}
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

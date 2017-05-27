@@ -8,7 +8,7 @@ var UserSchema = mongoose.Schema({
 		index: true
 	},
 	cpf: {
-		type: Number
+		type: String
 	},
 	telefone: {
 		type: Number
@@ -25,10 +25,30 @@ var UserSchema = mongoose.Schema({
 	password:{
 		type: String
 	},
+	bio: String,
 	typeUser: {
 		type: String,
 		default: 'paciente'
-	}
+	},
+	appointments: [{
+		_idUser: mongoose.Schema.Types.ObjectId,
+		name: String,
+		date: Date
+	}],
+	avatar: {
+		fieldname: String,
+		originalname: String,
+		encoding: String,
+		mimetype: String,
+		destination: String,
+		filename: String,
+		path: String,
+		size: Number
+	},
+	medicOptions: [{
+		cremers: Number,
+		speciality: String
+	}]
 });
 
 var User = module.exports = mongoose.model('User', UserSchema);

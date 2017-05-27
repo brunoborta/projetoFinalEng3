@@ -527,7 +527,7 @@ h2.title {
 .sidebar .logo,
 .off-canvas-sidebar .logo {
   position: relative;
-  padding: 15px 15px;
+  padding: 5px 15px;
   z-index: 4;
 }
 .sidebar .logo:after,
@@ -5069,4 +5069,12 @@ footer .btn {
 	width:100%;
 	height: calc(100% - 60px);
 	margin-top: 70px;
+}
+
+.logo .logo-img {
+	padding: 5px 15px;
+}
+
+.form-file-upload .input-group {
+	width: 100%;
 }
