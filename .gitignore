@@ -32,3 +32,8 @@ node_modules
 
 # Ignore .idea files
 .idea/*
+
+# Ignore the base layout files
+examples/
+assets/
+public/images/avatar/

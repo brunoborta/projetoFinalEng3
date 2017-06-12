@@ -25,7 +25,9 @@
 	<div class="wrapper">
 		<div class="sidebar" data-color="green" data-image="/images/sidebar-6.jpg">
 			<div class="logo">
-				<img src="/images/logoColored.png" alt="logo" class="logo-img">
+				<a href="/internal/patient/appointments">
+					<img src="/images/logoColored.png" alt="logo" class="logo-img">
+				</a>
 			</div>
 	
 			<div class="sidebar-wrapper">
@@ -101,6 +103,78 @@
 			{{/if}}
 		</div>
 	</div>
+	{{#if modal}}
+	<!-- Modal Core -->
+	<div class="modal fade" id="newAppointment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Nova Consulta</h4>
+				</div>
+				<div class="modal-body">
+					<form method="post" action="/internal/patient/profile" enctype="multipart/form-data">
+						{{#if errors}}
+							{{#each errors}}
+								<div class="alert alert-danger">{{msg}}</div>
+							{{/each}}
+						{{/if}}
+						
+						<div class="row">
+							<div class="col-sm-6 col-xs-12">
+								<div class="form-group label-floating">
+									<label class="control-label">Especialidade</label>
+									<select name="especialidade" class="form-control">
+										<option disabled="" selected=""></option>
+										<option value="dermatologia">Dermatologia</option>
+										<option value="endocrinologia">Endocrinologia</option>
+										<option value="ginecologia">Ginecologia</option>
+										<option value="hematologia">Hematologia</option>
+										<option value="nefrologia">Nefrologia</option>
+										<option value="neurologia">Neurologia</option>
+										<option value="oftalmologia">Oftalmologia</option>
+										<option value="psiquiatria">Psiquiatria</option>
+										<option value="urologia">Urologia</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-6 col-xs-12">
+								<div class="form-group label-floating">
+									<label class="control-label">Medico</label>
+									<select name="medico" class="form-control">
+										<option disabled="" selected=""></option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6 col-xs-12">
+								<div class="form-group label-floating">
+									<label class="control-label">Data</label>
+									<select name="medico" class="form-control">
+										<option disabled="" selected=""></option>
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-6 col-xs-12">
+								<div class="form-group label-floating">
+									<label class="control-label">Hora</label>
+									<select name="medico" class="form-control">
+										<option disabled="" selected=""></option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default btn-simple" data-dismiss="modal">Sair</button>
+					<button type="submit" class="btn btn-info btn-simple">Marcar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	{{/if}}
 	<script type="text/javascript" src="/javascripts/jquery.min.js"></script>
 	<script type="text/javascript" src="/javascripts/jquery.easing.min.js"></script>
 	<script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>

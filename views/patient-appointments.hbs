@@ -10,41 +10,40 @@
 					<div class="card-content table-responsive">
 						<table class="table">
 							<thead class="text-primary">
-							<th>Nome do Médico</th>
-							<th>Data</th>
-							<th>Hora</th>
-							<th>Cancelar</th>
+								<th>Nome do Médico</th>
+								<th>Data</th>
+								<th>Hora</th>
+								<th>Ação</th>
 							</thead>
 							<tbody>
-							<tr>
-								<td>Dakota Rice</td>
-								<td>19/05/2017</td>
-								<td>13:50</td>
-								<td>
-									<button class="btn btn-danger btn-fab btn-fab-mini btn-round">
-										<i class="material-icons">error</i>
-										<div class="ripple-container"></div>
-									</button>
-								</td>
-							</tr>
-							<tr>
-								<td>Minerva Hooper</td>
-								<td>19/05/2017</td>
-								<td>15:30</td>
-								<td>
-									<a class="btn btn-danger btn-fab btn-fab-mini btn-round">
-										<i class="material-icons">error</i>
-										<div class="ripple-container"></div>
-									</a>
-								</td>
-							</tr>
+								<tr>
+									<td>Dakota Rice</td>
+									<td>19/05/2017</td>
+									<td>13:50</td>
+									<td>
+										<a class="btn btn-danger btn-fab btn-fab-mini btn-round" rel="tooltip" data-original-title="Cancelar consulta" data-placement="right">
+											<i class="material-icons">error</i>
+											<div class="ripple-container"></div>
+										</a>
+									</td>
+								</tr>
+								<tr>
+									<td>Minerva Hooper</td>
+									<td>19/05/2017</td>
+									<td>15:30</td>
+									<td>
+										<a class="btn btn-danger btn-fab btn-fab-mini btn-round" rel="tooltip" data-original-title="Cancelar consulta" data-placement="right">
+											<i class="material-icons">error</i>
+											<div class="ripple-container"></div>
+										</a>
+									</td>
+								</tr>
 							</tbody>
 						</table>
-
 					</div>
 				</div>
 			</div>
 		</div>
-		<a class="btn btn-info pull-right">Nova Consulta</a>
+		<a class="btn btn-info pull-right" data-toggle="modal" data-target="#newAppointment">Nova Consulta</a>
 	</div>
 </div>

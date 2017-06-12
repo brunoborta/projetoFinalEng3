@@ -78,16 +78,8 @@ app.use(passport.session());
 app.use('/', index);
 app.use('/users', users);
 app.use('/internal', internal);
-
-// // error handler/global variables
-// app.use(function(err, req, res, next) {
-//   // set locals, only providing error in development
-//  
-//   // res.locals.message = err.message;
-//   //
-//   // // render the error page
-//   // res.status(err.status || 500);
-//   // res.render('error');
-// });
+app.all('*', function(req, res) {
+	res.redirect("/");
+});
 
 module.exports = app;

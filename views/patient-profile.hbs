@@ -1,7 +1,30 @@
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-md-4 col-sm-12 col-xs-12 pull-right">
+				<div class="card card-profile">
+					<div class="card-avatar">
+						<a href="#">
+							{{#if user.avatar.filename.length}}
+								<img class="img" src="/images/avatar/{{user.avatar.filename}}"/>
+							{{else}}
+								<img class="img" src="/images/avatar/default.jpg"/>
+							{{/if}}
+						</a>
+					</div>
+					<div class="content">
+						<h4 class="card-title">{{user.nome}}</h4>
+						<p class="card-content">
+							{{#if user.bio.length}}
+								{{user.bio}}
+							{{else}}
+								Escreva um pouco sobre você para que a Clinica Medilab possa personalizar o serviço ainda mais para você!
+							{{/if}}
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-8 col-sm-12">
 				<div class="card">
 					<div class="card-header" data-background-color="green">
 						<h4 class="title">Perfil</h4>
@@ -63,7 +86,7 @@
 									<div class="form-group form-file-upload is-fileinput {{#unless user.avatar.length}}is-empty{{/unless}}">
 										<input type="file" id="avatar" name="avatar">
 										<div class="input-group">
-				<input type="text" readonly="" class="form-control" placeholder="{{#if user.avatar.filename.length}}Troque a foto do seu perfil...{{else}}Selecione a foto do seu perfil...{{/if}}">
+											<input type="text" readonly="" class="form-control" placeholder="{{#if user.avatar.filename.length}}Troque a foto do seu perfil...{{else}}Selecione a foto do seu perfil...{{/if}}">
 										</div>
 										<span class="material-input"></span>
 									</div>
@@ -83,30 +106,6 @@
 							<input type="submit" class="btn btn-info pull-right" value="Atualizar Perfil"/>
 							<div class="clearfix"></div>
 						</form>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card card-profile">
-					<div class="card-avatar">
-						<a href="#">
-							{{#if user.avatar.filename.length}}
-							<img class="img" src="/images/avatar/{{user.avatar.filename}}"/>
-							{{else}}
-							<img class="img" src="/images/avatar/default.jpg"/>
-							{{/if}}
-						</a>
-					</div>
-
-					<div class="content">
-						<h4 class="card-title">{{user.nome}}</h4>
-						<p class="card-content">
-							{{#if user.bio.length}}
-								{{user.bio}}
-							{{else}}
-								Escreva um pouco sobre você para que a Clinica Medilab possa personalizar o serviço ainda mais para você!
-							{{/if}}
-						</p>
 					</div>
 				</div>
 			</div>
