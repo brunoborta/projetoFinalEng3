@@ -13,6 +13,7 @@ router.get('/patient/appointments', ensureAuthenticated, isPatient, function(req
 	res.render('patient-appointments', {
 		layout: 'layout-patient.hbs',
 		title: 'Consultas',
+		js: '<script src="/javascripts/appointments-handler.js" type="text/javascript"></script>',
 		appointments: true,
 		modal: true,
 		footer: true
@@ -25,7 +26,7 @@ router.get('/patient/maps', ensureAuthenticated, isPatient, function(req, res) {
 		title: 'A Clinica',
 		maps: true,
 		js: '<script src="/javascripts/maps.js" type="text/javascript"></script>' +
-			'<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initGoogleMaps"></script>',
+			'<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiqIn_gGCbk64xpt9AOQpjsbUEWibVfS0&callback=initGoogleMaps"></script>',
 			
 	});
 });
@@ -84,7 +85,7 @@ router.post('/patient/profile', ensureAuthenticated, isPatient, upload.single('a
 			footer: true
 		});
 	} else { // If not, It will update
-		User.findOneAndUpdate({'_id': req.user.id}, updates, function(err) {
+		User.findOneAndUpdate({'_id': req.user.id}, {$set: updates}, function(err) {
 			if(err) throw err;
 			req.flash('success_msg', 'Seu perfil foi atualizado!');
 			res.redirect('/internal/patient/profile');
@@ -93,6 +94,38 @@ router.post('/patient/profile', ensureAuthenticated, isPatient, upload.single('a
 });
 
 
+/* AJAX */
+
+router.post('/ajax/medicsAvailable', ensureAuthenticated, isPatient, function(req, res) {
+	var speciality = req.body.speciality;
+	User.getMedicsBySpeciality(speciality, function(err, medics) {
+		if(err) throw err;
+		res.end(JSON.stringify(medics));
+	});
+});
+
+router.post('/ajax/daysAvailable', ensureAuthenticated, isPatient, function(req, res) {
+	var id = req.body.idMedico;
+	User.getWorkingDays(id, function(err, docs) {
+		if(err) throw err;
+		res.end(JSON.stringify(docs));
+	});
+});
+
+router.post('/ajax/hoursAvailable', ensureAuthenticated, isPatient, function(req, res) {
+	var id = req.body.idMedico;
+	var date = req.body.date;
+	User.getWorkingHoursAvailable(id, date, function(err, docs) {
+		if(err) throw err;
+		console.log(docs);
+		var hourStart = docs.medicOptions.workingHourStart;
+		var minutesStart = docs.medicOptions.workingMinutesStart;
+		var hourEnd = docs.medicOptions.workingHourEnd;
+		var minutesEnd = docs.medicOptions.workingMinutesEnd;
+		var appointments = docs.appointments;
+		getWorkingHours(hourStart, minutesStart, hourEnd, minutesEnd, appointments);
+	});
+});
 
 /* GET internal medic. */
 router.get('/medic', ensureAuthenticated, isMedic, function(req, res) {
@@ -107,6 +140,10 @@ router.get('/logout', function(req, res) {
 	res.redirect('/users/login');
 });
 
+/* Prepare the hours to exhibit in the Hora field */
+function getWorkingHours(workingHourStart, workingMinutesStart, workingHourEnd, workingMinutesEnd, appointments) {
+	
+}
 
 // Middlewares
 function ensureAuthenticated(req, res, next) {

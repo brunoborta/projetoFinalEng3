@@ -32,8 +32,9 @@ var UserSchema = mongoose.Schema({
 	},
 	appointments: [{
 		_idUser: mongoose.Schema.Types.ObjectId,
-		name: String,
-		date: Date
+		nome: String,
+		date: Date,
+		status: String
 	}],
 	avatar: {
 		fieldname: String,
@@ -45,10 +46,16 @@ var UserSchema = mongoose.Schema({
 		path: String,
 		size: Number
 	},
-	medicOptions: [{
-		cremers: Number,
-		speciality: String
-	}]
+	medicOptions: {
+		creme: Number,
+		speciality: Number,
+		workingDayStart: Number,
+		workingDayEnd: Number,
+		workingHourStart: Number,
+		workingMinutesStart: Number,
+		workingHourEnd: Number,
+		workingMinutesEnd: Number
+	}
 });
 
 var User = module.exports = mongoose.model('User', UserSchema);
@@ -76,4 +83,25 @@ module.exports.comparePasswords = function(password, hash, callback) {
 
 module.exports.getUserById = function(id, callback) {
 	User.findById(id, callback);
+};
+
+module.exports.getMedicsBySpeciality = function(speciality, callback) {
+	User.find({'medicOptions.speciality': speciality, "typeUser":"medico"}, 'nome', function(err, docs) {
+		if(err) throw err;
+		callback(null, docs);
+	});
+};
+
+module.exports.getWorkingDays = function(id, callback) {
+	User.findOne({'_id': mongoose.Types.ObjectId(id)}, 'medicOptions.workingDayStart medicOptions.workingDayEnd', function(err, docs) {
+		if(err) throw err;
+		callback(null, docs);
+	});
+};
+
+module.exports.getWorkingHoursAvailable = function(id, date, callback) {
+	User.findOne({'_id': mongoose.Types.ObjectId(id)}, 'medicOptions appointments', function(err, docs) {
+		if(err) throw err;
+		callback(null, docs);
+	});
 };
