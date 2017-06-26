@@ -51,10 +51,85 @@ $(function() {
 				'date': $('#data :selected').val()
 			},
 			success: function(data) {
-				var arrDays = JSON.parse(data);
-				buildAppointmentDays(arrDays.medicOptions.workingDayStart, arrDays.medicOptions.workingDayEnd, 30);
+				var dates = JSON.parse(data);
+				if(dates.length > 0) {
+					for(var i = 0; i < dates.length; i++) {
+						var dateAux = new Date(dates[i]);
+						$('#hora').append('<option value="' + dateAux.getTime() + '">' + dateAux.getUTCHours() + ':' + ('0' + dateAux.getUTCMinutes()).slice(-2) + '</option>');
+					}
+				} else {
+					alert('Nao há datas disponíveis para este dia.');
+				}
 			}
 		});
+	});
+	
+	$('#sairModal, #newAppointment .modal-header button').click(function() {
+		$('#medico, #data, #hora').find('*').not('.disabledOption').remove();
+		$('.disabledOption').prop('selected', 'selected');
+	});
+	
+	$('#marcarModal').click(function() {
+		var $valid = $('#newAppointment form').valid();
+		if(!$valid) {
+			$validator.focusInvalid();
+			return false;
+		} else {
+			$.ajax({
+				type: 'POST',
+				url: "/internal/ajax/setAppointment",
+				data: {
+					'idMedico': $('#medico :selected').val(),
+					'date': $('#hora :selected').val()
+				},
+				success: function(data) {
+					var Medic = JSON.parse(data);
+					var date = new Date(Medic.data);
+					console.log(date);
+					var brazilianDate = ('0' + date.getDate()).slice(-2) + '/' +
+						('0' + (date.getMonth() + 1)).slice(-2) + '/' +
+						date.getFullYear();
+					var time = (date.getUTCHours() + ':' + ('0' + date.getUTCMinutes()).slice(-2));
+					console.log(brazilianDate, time);
+					$('#appointmentTable').append(
+						'<tr>' +
+							'<td>' + Medic.nome + '</td>' +
+							'<td>' + brazilianDate + '</td>' +
+							'<td>' + time +'</td>' +
+							'<td>' +
+								'<a class="btn btn-danger btn-fab btn-fab-mini btn-round" rel="tooltip" data-original-title="Cancelar consulta" data-placement="right" data-medic="' + Medic.id + '" data-time="' + date.getTime() +'">' +
+									'<i class="material-icons">error</i>' +
+									'<div class="ripple-container"></div>' +
+								'</a>' +
+							'</td>' +
+						'</tr>'
+					);
+					//Reactivate the tooltips
+					$('[rel="tooltip"]').tooltip();
+					$('#sairModal').click();
+				}
+			});
+		}
+	});
+
+	var $validator = $('#newAppointment form').validate({
+		rules: {
+			especialidade: {
+				required: true
+			},
+			medico : {
+				required: true
+			},
+			data : {
+				required: true
+			},
+			hora : {
+				required: true
+			}
+		},
+		errorPlacement: function(error, element) {
+			$(element).parent('div').addClass('has-error');
+		}
 	});
 });
 

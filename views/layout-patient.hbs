@@ -123,8 +123,8 @@
 						<div class="row">
 							<div class="col-sm-6 col-xs-12">
 								<div class="form-group label-floating">
-									<label class="control-label">Especialidade</label>
-									<select name="especialidade" id="especialidade" class="form-control">
+									<label class="control-label">Especialidade <small>(requerido)</small></label>
+									<select name="especialidade" id="especialidade" class="form-control" required>
 										<option class="disabledOption" disabled="" selected=""></option>
 										<option value="1">Dermatologia</option>
 										<option value="2">Endocrinologia</option>
@@ -140,7 +140,7 @@
 							</div>
 							<div class="col-sm-6 col-xs-12">
 								<div class="form-group label-floating">
-									<label class="control-label">Medico</label>
+									<label class="control-label">Medico <small>(requerido)</small></label>
 									<select name="medico" id="medico" class="form-control">
 										<option class="disabledOption" disabled="" selected=""></option>
 									</select>
@@ -150,16 +150,16 @@
 						<div class="row">
 							<div class="col-sm-6 col-xs-12">
 								<div class="form-group label-floating">
-									<label class="control-label">Data</label>
-									<select name="data" id="data" class="form-control">
+									<label class="control-label">Data <small>(requerido)</small></label>
+									<select name="data" id="data" class="form-control" required>
 										<option class="disabledOption" disabled="" selected=""></option>
 									</select>
 								</div>
 							</div>
 							<div class="col-sm-6 col-xs-12">
 								<div class="form-group label-floating">
-									<label class="control-label">Hora</label>
-									<select name="hora" id="hora" class="form-control">
+									<label class="control-label">Hora <small>(requerido)</small></label>
+									<select name="hora" id="hora" class="form-control" required>
 										<option class="disabledOption" disabled="" selected=""></option>
 									</select>
 								</div>
@@ -168,8 +168,8 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default btn-simple" data-dismiss="modal">Sair</button>
-					<button type="submit" class="btn btn-info btn-simple">Marcar</button>
+					<button id="sairModal" type="button" class="btn btn-default btn-simple" data-dismiss="modal">Sair</button>
+					<button id="marcarModal" type="submit" class="btn btn-info btn-simple">Marcar</button>
 				</div>
 			</div>
 		</div>

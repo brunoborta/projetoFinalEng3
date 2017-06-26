@@ -13,7 +13,8 @@ router.get('/patient/appointments', ensureAuthenticated, isPatient, function(req
 	res.render('patient-appointments', {
 		layout: 'layout-patient.hbs',
 		title: 'Consultas',
-		js: '<script src="/javascripts/appointments-handler.js" type="text/javascript"></script>',
+		js: '<script src="/javascripts/appointments-handler.js" type="text/javascript"></script>' +
+		'<script src="/javascripts/jquery.validate.min.js" type="text/javascript"></script>',
 		appointments: true,
 		modal: true,
 		footer: true
@@ -26,7 +27,7 @@ router.get('/patient/maps', ensureAuthenticated, isPatient, function(req, res) {
 		title: 'A Clinica',
 		maps: true,
 		js: '<script src="/javascripts/maps.js" type="text/javascript"></script>' +
-			'<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiqIn_gGCbk64xpt9AOQpjsbUEWibVfS0&callback=initGoogleMaps"></script>',
+			'<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initGoogleMaps"></script>',
 			
 	});
 });
@@ -117,15 +118,29 @@ router.post('/ajax/hoursAvailable', ensureAuthenticated, isPatient, function(req
 	var date = req.body.date;
 	User.getWorkingHoursAvailable(id, date, function(err, docs) {
 		if(err) throw err;
-		console.log(docs);
-		var hourStart = docs.medicOptions.workingHourStart;
-		var minutesStart = docs.medicOptions.workingMinutesStart;
-		var hourEnd = docs.medicOptions.workingHourEnd;
-		var minutesEnd = docs.medicOptions.workingMinutesEnd;
+		var medicOptions = docs.medicOptions;
 		var appointments = docs.appointments;
-		getWorkingHours(hourStart, minutesStart, hourEnd, minutesEnd, appointments);
+		var showingDates = getWorkingHours(medicOptions, appointments, date);
+		res.end(JSON.stringify(showingDates));
 	});
 });
+
+router.post('/ajax/setAppointment', ensureAuthenticated, isPatient, function(req, res) {
+	var idMedic = req.body.idMedico;
+	var date = new Date();
+	date.setTime(req.body.date);
+	User.setNewAppointment(idMedic, req.user, date, function(err, Medic) {
+		if(err) throw err;
+		var ajaxReturn = {
+			id: Medic._id,
+			nome: Medic.nome,
+			data: date
+		};
+		res.end(JSON.stringify(ajaxReturn));
+		// req.flash('success_msg', 'Uma nova consulta foi agendada com sucesso!');
+	});
+});
+
 
 /* GET internal medic. */
 router.get('/medic', ensureAuthenticated, isMedic, function(req, res) {
@@ -141,8 +156,33 @@ router.get('/logout', function(req, res) {
 });
 
 /* Prepare the hours to exhibit in the Hora field */
-function getWorkingHours(workingHourStart, workingMinutesStart, workingHourEnd, workingMinutesEnd, appointments) {
+function getWorkingHours(medicOptions, appointments, date) {
+	// A generic date is used to make the calculations
+	//The starting date will iterate until find the leaving hour 
+	var dateAux = new Date(date);
+	dateAux.setUTCHours(medicOptions.workingHourStart);
+	dateAux.setUTCMinutes(medicOptions.workingMinutesStart);
+	var dateEnd = new Date(date);
+	dateEnd.setUTCHours(medicOptions.workingHourEnd);
+	dateEnd.setUTCMinutes(medicOptions.workingMinutesEnd);
+	var showingDates = [];
 	
+	while(dateAux.getTime() !== dateEnd.getTime()) {
+	date:
+		if(appointments.length > 0) {
+			for(var i = 0; i < appointments.length; i++) {
+				if(dateAux.getTime() === appointments[i].date.getTime()) {
+					//pop the date from the appointment array for performance purposes 
+					appointments.splice(i,1);
+					dateAux.setUTCMinutes(dateAux.getMinutes() + 30);
+					break date;
+				}
+			}
+		}
+		showingDates.push(new Date(dateAux));
+		dateAux.setUTCMinutes(dateAux.getMinutes() + 30);
+	}
+	return showingDates;
 }
 
 // Middlewares
