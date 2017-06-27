@@ -153,7 +153,37 @@ module.exports.setNewAppointment = function(idMedic, patient, date, callback) {
 		User.findOneAndUpdate({'_id': mongoose.Types.ObjectId(patient._id)}, {$push: {"appointments":appointmentPatient}}, function(err) {
 			if(err) throw err;
 			User.findOneAndUpdate({'_id': mongoose.Types.ObjectId(Medic._id)}, {$push: {"appointments": appointmentMedic}}, function(err) {
+				if(err) throw err;
 				callback(null, Medic);
+			});
+		});
+	});
+};
+
+module.exports.getAppointments = function(id, callback) {
+	User.findOne({'_id': mongoose.Types.ObjectId(id)}, 'appointments', callback);
+};
+
+module.exports.removeAppointment = function(idMedic, Patient, date, callback) {
+	User.findById(idMedic, function(err,Medic) {
+		if(err) throw err;
+		var appointmentPatient = {
+			_id: Medic._id,
+			nome: Medic.nome,
+			date: date,
+			status: 'Confirmada'
+		};
+		var appointmentMedic = {
+			_id: Patient._id,
+			nome: Patient.nome,
+			date: date,
+			status: 'Confirmada'
+		};
+		User.findOneAndUpdate({'_id': mongoose.Types.ObjectId(Patient._id)}, {$pull: {"appointments":appointmentPatient}}, function(err) {
+			if(err) throw err;
+			User.findOneAndUpdate({'_id': mongoose.Types.ObjectId(Medic._id)}, {$pull: {"appointments": appointmentMedic}}, function(err) {
+				if(err) throw err;
+				callback(null);
 			});
 		});
 	});

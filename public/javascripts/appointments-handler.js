@@ -85,19 +85,18 @@ $(function() {
 				success: function(data) {
 					var Medic = JSON.parse(data);
 					var date = new Date(Medic.data);
-					console.log(date);
 					var brazilianDate = ('0' + date.getDate()).slice(-2) + '/' +
 						('0' + (date.getMonth() + 1)).slice(-2) + '/' +
 						date.getFullYear();
 					var time = (date.getUTCHours() + ':' + ('0' + date.getUTCMinutes()).slice(-2));
-					console.log(brazilianDate, time);
+					$('#noAppointment').remove();
 					$('#appointmentTable').append(
 						'<tr>' +
 							'<td>' + Medic.nome + '</td>' +
 							'<td>' + brazilianDate + '</td>' +
 							'<td>' + time +'</td>' +
 							'<td>' +
-								'<a class="btn btn-danger btn-fab btn-fab-mini btn-round" rel="tooltip" data-original-title="Cancelar consulta" data-placement="right" data-medic="' + Medic.id + '" data-time="' + date.getTime() +'">' +
+								'<a class="btn btn-danger btn-fab btn-fab-mini btn-round cancelar-consulta" rel="tooltip" data-original-title="Cancelar consulta" data-placement="right" data-medic="' + Medic.id + '" data-time="' + date.getTime() +'">' +
 									'<i class="material-icons">error</i>' +
 									'<div class="ripple-container"></div>' +
 								'</a>' +
@@ -112,6 +111,34 @@ $(function() {
 		}
 	});
 
+	$('#appointmentTable').on('click','.cancelar-consulta', function(e) {
+		e.preventDefault();
+		var btnClicked = $(this);
+		if(confirm('Você tem certeza que gostaria de cancelar esta consulta?')) {
+			$.ajax({
+				type: 'POST',
+				url: "/internal/ajax/cancelAppointment",
+				data: {
+					'idMedico': $(this).data('medic'),
+					'dateTime': $(this).data('time')
+				},
+				success: function(data) {
+					var ajaxReturn = JSON.parse(data);
+					if(ajaxReturn) {
+						btnClicked.parents("tr:first").remove();
+						if($('#appointmentTable').children().length < 1) {
+							$('#appointmentTable').append(
+								'<tr id="noAppointment">' +
+									'<td>Não há consultas marcadas por você ainda. Clique no botao e marque!</td>' +
+								'</tr>'
+							);
+						}
+					}
+				}
+			});
+		}
+	});
+	
 	var $validator = $('#newAppointment form').validate({
 		rules: {
 			especialidade: {

@@ -7,17 +7,32 @@ var User = require('../models/user');
 
 /* GET internal patient. */
 router.get('/patient/appointments', ensureAuthenticated, isPatient, function(req, res) {
-	// The modal was inserted inside the layout because
-	//it should be outside the .wrapper div, which's
-	//inside the layout
-	res.render('patient-appointments', {
-		layout: 'layout-patient.hbs',
-		title: 'Consultas',
-		js: '<script src="/javascripts/appointments-handler.js" type="text/javascript"></script>' +
-		'<script src="/javascripts/jquery.validate.min.js" type="text/javascript"></script>',
-		appointments: true,
-		modal: true,
-		footer: true
+	User.getAppointments(req.user._id, function(err, docs) {
+		if(err) throw err;
+		var appointments = [];
+		for(var i = 0; i < docs.appointments.length; i++) {
+			var data = docs.appointments[i].date;
+			appointments.push({
+				id: docs.appointments[i]._id,
+				nome: docs.appointments[i].nome,
+				data: data.getBrazilianDateFormat(),
+				hora: data.getFormattedTime(),
+				dataTempo: data.getTime()
+			});
+		}
+		// The modal was inserted inside the layout because
+		//it should be outside the .wrapper div, which's
+		//inside the layout
+		res.render('patient-appointments', {
+			layout: 'layout-patient.hbs',
+			title: 'Consultas',
+			js: '<script src="/javascripts/appointments-handler.js" type="text/javascript"></script>' +
+			'<script src="/javascripts/jquery.validate.min.js" type="text/javascript"></script>',
+			appointmentsBlock: true,
+			appointments: appointments,
+			modal: true,
+			footer: true
+		});
 	});
 });
 
@@ -137,7 +152,16 @@ router.post('/ajax/setAppointment', ensureAuthenticated, isPatient, function(req
 			data: date
 		};
 		res.end(JSON.stringify(ajaxReturn));
-		// req.flash('success_msg', 'Uma nova consulta foi agendada com sucesso!');
+	});
+});
+
+router.post('/ajax/cancelAppointment', ensureAuthenticated, isPatient, function(req, res) {
+	var idMedic = req.body.idMedico;
+	var date = new Date();
+	date.setTime(req.body.dateTime);
+	User.removeAppointment(idMedic, req.user, date, function(err) {
+		if(err) throw err;
+		res.end(JSON.stringify(true));
 	});
 });
 
@@ -168,22 +192,47 @@ function getWorkingHours(medicOptions, appointments, date) {
 	var showingDates = [];
 	
 	while(dateAux.getTime() !== dateEnd.getTime()) {
-	date:
+		var flagCanPush = true;
 		if(appointments.length > 0) {
 			for(var i = 0; i < appointments.length; i++) {
 				if(dateAux.getTime() === appointments[i].date.getTime()) {
 					//pop the date from the appointment array for performance purposes 
 					appointments.splice(i,1);
-					dateAux.setUTCMinutes(dateAux.getMinutes() + 30);
-					break date;
+					flagCanPush = false;
 				}
 			}
 		}
-		showingDates.push(new Date(dateAux));
+		if(flagCanPush === true) {
+			showingDates.push(new Date(dateAux));
+		}
 		dateAux.setUTCMinutes(dateAux.getMinutes() + 30);
 	}
 	return showingDates;
+	// console.log(appointments.length);
+	// while(dateAux.getTime() !== dateEnd.getTime()) {
+	// 	if(appointments.length > 0) {
+	//		
+	// 	}
+	// 	showingDates.push(new Date(dateAux));
+	// 	dateAux.setUTCMinutes(dateAux.getMinutes() + 30);
+	// }
 }
+
+/* New methods for the Date object */
+
+Date.prototype.getBrazilianDateFormat = function() {
+	var dat = new Date(this.valueOf());
+	// string containing brazilian date (dd/mm/yyyy)
+	return ('0' + dat.getDate()).slice(-2) + '/' +
+		('0' + (dat.getMonth() + 1)).slice(-2) + '/' +
+		dat.getFullYear();
+};
+
+Date.prototype.getFormattedTime = function() {
+	var dat = new Date(this.valueOf());
+	// string containing time formatted HH:MM
+	return dat.getUTCHours() + ':' + ('0' + dat.getUTCMinutes()).slice(-2);
+};
 
 // Middlewares
 function ensureAuthenticated(req, res, next) {

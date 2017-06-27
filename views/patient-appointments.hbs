@@ -16,28 +16,23 @@
 								<th>Ação</th>
 							</thead>
 							<tbody id="appointmentTable">
+							{{#each appointments}}
 								<tr>
-									<td>Dakota Rice</td>
-									<td>19/05/2017</td>
-									<td>13:50</td>
+									<td>{{this.nome}}</td>
+									<td>{{this.data}}</td>
+									<td>{{this.hora}}</td>
 									<td>
-										<a class="btn btn-danger btn-fab btn-fab-mini btn-round" rel="tooltip" data-original-title="Cancelar consulta" data-placement="right">
+										<a class="btn btn-danger btn-fab btn-fab-mini btn-round cancelar-consulta" rel="tooltip" data-original-title="Cancelar consulta" data-placement="right" data-medic="{{this.id}}" data-time="{{this.dataTempo}}">
 											<i class="material-icons">error</i>
 											<div class="ripple-container"></div>
 										</a>
 									</td>
 								</tr>
-								<tr>
-									<td>Minerva Hooper</td>
-									<td>19/05/2017</td>
-									<td>15:30</td>
-									<td>
-										<a class="btn btn-danger btn-fab btn-fab-mini btn-round" rel="tooltip" data-original-title="Cancelar consulta" data-placement="right">
-											<i class="material-icons">error</i>
-											<div class="ripple-container"></div>
-										</a>
-									</td>
+							{{else}}
+								<tr id="noAppointment">
+									<td>Não há consultas marcadas por você ainda. Clique no botao e marque!</td>
 								</tr>
+							{{/each}}
 							</tbody>
 						</table>
 					</div>
