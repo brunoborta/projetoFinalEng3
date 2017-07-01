@@ -11,7 +11,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/projetofinaleng3');
+mongoose.connect(process.env.MONGODB_URI);
 var db = mongoose.connection;
 
 var index = require('./routes/index');

@@ -42,7 +42,7 @@ router.get('/patient/maps', ensureAuthenticated, isPatient, function(req, res) {
 		title: 'A Clinica',
 		maps: true,
 		js: '<script src="/javascripts/maps.js" type="text/javascript"></script>' +
-			'<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initGoogleMaps"></script>',
+			'<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=' + process.env.GOOGLEKEY + '&callback=initGoogleMaps"></script>',
 			
 	});
 });
